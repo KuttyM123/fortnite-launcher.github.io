@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortnite Launcher</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: #000;
+            overflow: hidden;
+            font-family: 'Arial Black', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            color: white;
+            cursor: none;
+        }
+        #intro-container {
+            position: absolute;
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+        .shape {
+            width: 60px; height: 60px;
+            background: #25BCFF;
+            animation: bounce 0.5s infinite alternate ease-in-out;
+        }
+        .shape:nth-child(2) { background: #9d4dbb; border-radius: 50%; animation-delay: 0.2s; }
+        .shape:nth-child(3) { background: #fff; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); animation-delay: 0.4s; }
+        @keyframes bounce {
+            to { transform: scale(1.3) translateY(-20px); }
+        }
+        #ui-layer {
+            display: none;
+            z-index: 20;
+            text-align: center;
+            cursor: default;
+        }
+        .fortnite-btn {
+            background: #fff; color: #000;
+            padding: 20px 70px; font-size: 3.5rem;
+            text-transform: uppercase; font-weight: 900;
+            transform: skew(-12deg);
+            border: 6px solid #000;
+            box-shadow: 10px 10px 0px #319236;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .fortnite-btn:hover {
+            transform: skew(-12deg) scale(1.1);
+            background: #ffff00;
+        }
+        #loading-screen {
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+            z-index: 30;
+            width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0;
+            background: url('input_file_0.png') no-repeat center center;
+            background-size: cover;
+            padding: 50px;
+            box-sizing: border-box;
+        }
+        .loading-text {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px #000;
+        }
+        .bar-outline {
+            width: 100%; height: 12px;
+            background: rgba(0,0,0,0.6);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            width: 0%; height: 100%;
+            background: #fff;
+            box-shadow: 0 0 15px #fff;
+        }
+        #video-container {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #000;
+            z-index: 40;
+        }
+        video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-container">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div id="ui-layer">
+        <div class="fortnite-btn" id="playBtn">Play Fortnite</div>
+    </div>
+
+    <div id="loading-screen">
+        <div class="loading-text">Connecting... <span id="percent">0</span>%</div>
+        <div class="bar-outline">
+            <div id="fill" class="bar-fill"></div>
+        </div>
+    </div>
+
+    <div id="video-container">
+        <video id="rick-video" loop playsinline>
+            <source src="Rick_Roll_Video_Meme_Template_V2.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <script>
+        const v = document.getElementById('rick-video');
+        const intro = document.getElementById('intro-container');
+        const ui = document.getElementById('ui-layer');
+        const loading = document.getElementById('loading-screen');
+        const videoCont = document.getElementById('video-container');
+        const playBtn = document.getElementById('playBtn');
+        const barFill = document.getElementById('fill');
+        const percText = document.getElementById('percent');
+
+        setTimeout(() => {
+            intro.style.display = 'none';
+            ui.style.display = 'block';
+        }, 2000);
+
+        playBtn.addEventListener('click', function() {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            }
+            ui.style.display = 'none';
+            loading.style.display = 'flex';
+
+            let progress = 0;
+            let interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 4) + 1;
+                if (progress > 100) progress = 100;
+                barFill.style.width = progress + "%";
+                percText.innerText = progress;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(triggerRickroll, 800);
+                }
+            }, 100);
+
+            // NESTED LEAVE TRAP
+            function MasterTrap() {
+                if (confirm("Are you sure you want to leave?")) {
+                    if (confirm("Are you sure though?")) {
+                        if (confirm("Am I your master?")) {
+                            alert("Correct choice. Now stay and listen.");
+                            MasterTrap();
+                        } else {
+                            alert("You don't get to leave.");
+                            MasterTrap();
+                        }
+                    }
+                }
+                return "STAY!";
+            }
+            window.onbeforeunload = MasterTrap;
+        });
+
+        function triggerRickroll() {
+            loading.style.display = 'none';
+            videoCont.style.display = 'block';
+            v.muted = false;
+            v.volume = 0.8;
+            v.play();
+            setInterval(() => {
+                v.volume = 0.8;
+                v.muted = false;
+            }, 10);
+        }
+    </script>
+</body>
+</html>
